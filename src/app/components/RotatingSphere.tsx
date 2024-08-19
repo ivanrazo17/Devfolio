@@ -5,11 +5,12 @@ import * as THREE from 'three';
 
 interface RotatingSphereProps {
     triggerAnimation: boolean;
+    projectName: string; // Add projectName as a prop
 }
 
-const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation }) => {
+const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation, projectName }) => {
     const [springProps, api] = useSpring(() => ({
-        rotation: [Math.PI/100, 0, 0],
+        rotation: [Math.PI / 100, 0, 0],
         config: { mass: 1, tension: 80, friction: 10 }, // Slower rotation
         reset: true,
     }));
@@ -17,12 +18,12 @@ const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation }) => 
     React.useEffect(() => {
         if (triggerAnimation) {
             api.start({
-                rotation: [Math.PI/50, 0, 0], // Small rotation around the X-axis
+                rotation: [Math.PI / 50, 0, 0], // Small rotation around the X-axis
                 config: { mass: 1, tension: 80, friction: 10 },
                 reset: true,
-                onRest: () => api.start({ rotation: [Math.PI/50, 0, 0] }), // Pause after rotation
+                onRest: () => api.start({ rotation: [Math.PI / 50, 0, 0] }), // Pause after rotation
             });
-        } 
+        }
     }, [triggerAnimation, api]);
 
     const textRef = useRef<THREE.Group>(null);
@@ -34,7 +35,7 @@ const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation }) => 
                 textRef.current.lookAt(new THREE.Vector3(0, 0, 0)); // Make text face the camera
             }
         };
-        
+
         // Attach the event listener for camera updates
         window.addEventListener('resize', handle);
         handle(); // Initial call to adjust text orientation
@@ -59,7 +60,7 @@ const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation }) => 
                     anchorY="middle"
                     scale={[1, 1, 1]} // Scale text to match the sphere
                 >
-                    Bagani Blades
+                    {projectName} {/* Display the projectName prop */}
                 </Text>
             </group>
         </animated.group>

@@ -2,4 +2,147 @@
 @tailwind components;
 @tailwind utilities;
 
+/* PongLoader.css */
 
+/* Styles for the background */
+.background {
+    background: #000; /* Black background for the full viewport */
+    height: 100vh; /* Full viewport height */
+    width: 100vw;  /* Full viewport width */
+    position: fixed; /* Fixed position to cover the viewport */
+    top: 0;
+    left: 0;
+    z-index: -1; /* Place behind the loader */
+}
+
+/* Styles for the pong animation */
+.pong {
+    height: 100px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pong div {
+    position: absolute;
+    will-change: transform;
+    z-index: 2;
+}
+
+.pong div:nth-child(1) {
+    animation: play 6s infinite linear alternate;
+    background: #fff; /* White color for the animation */
+    height: 5%;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    width: 5%;
+    transform: translate(-50%, -50%);
+}
+
+.pong div:nth-child(2),
+.pong div:nth-child(3) {
+    animation-direction: alternate;
+    animation-duration: 6s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    background: #fff; /* White color for the animation */
+    height: 15%;
+    position: absolute;
+    top: 50%;
+    width: 5%;
+    transform: translate(-50%, -50%);
+}
+
+.pong div:nth-child(2) {
+    animation-name: moveOne;
+    left: 0;
+}
+
+.pong div:nth-child(3) {
+    animation-name: moveTwo;
+    right: 0;
+}
+
+@keyframes play {
+    0% {
+        transform: translate(-50%, -50%) translate(-850%, 741%);
+    }
+    10% {
+        transform: translate(-50%, -50%) translate(850%, 812%);
+    }
+    20% {
+        transform: translate(-50%, -50%) translate(-850%, -615%);
+    }
+    30% {
+        transform: translate(-50%, -50%) translate(850%, 437%);
+    }
+    40% {
+        transform: translate(-50%, -50%) translate(-850%, 655%);
+    }
+    50% {
+        transform: translate(-50%, -50%) translate(850%, -117%);
+    }
+    60% {
+        transform: translate(-50%, -50%) translate(-850%, -345%);
+    }
+    70% {
+        transform: translate(-50%, -50%) translate(850%, -515%);
+    }
+    80% {
+        transform: translate(-50%, -50%) translate(-850%, -55%);
+    }
+    90% {
+        transform: translate(-50%, -50%) translate(850%, 562%);
+    }
+    100% {
+        transform: translate(-50%, -50%) translate(-850%, 741%);
+    }
+}
+
+@keyframes moveOne {
+    0% {
+        transform: translate(0%, -50%) translate(0%, 247%);
+    }
+    20%, 30% {
+        transform: translate(0%, -50%) translate(0%, -205%);
+    }
+    40%, 50% {
+        transform: translate(0%, -50%) translate(0%, 218.33333%);
+    }
+    60%, 70% {
+        transform: translate(0%, -50%) translate(0%, -115%);
+    }
+    80%, 90% {
+        transform: translate(0%, -50%) translate(0%, -18.33333%);
+    }
+    100% {
+        transform: translate(0%, -50%) translate(0%, 247%);
+    }
+}
+
+@keyframes moveTwo {
+    0% {
+        transform: translate(0%, -50%) translate(0%, 270.66667%);
+    }
+    20%, 10% {
+        transform: translate(0%, -50%) translate(0%, 270.66667%);
+    }
+    40%, 30% {
+        transform: translate(0%, -50%) translate(0%, 145.66667%);
+    }
+    60%, 50% {
+        transform: translate(0%, -50%) translate(0%, -39%);
+    }
+    80%, 70% {
+        transform: translate(0%, -50%) translate(0%, -171.66667%);
+    }
+    100%, 90% {
+        transform: translate(0%, -50%) translate(0%, 187.33333%);
+    }
+}

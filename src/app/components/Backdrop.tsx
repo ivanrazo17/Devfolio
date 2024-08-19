@@ -1,3 +1,5 @@
+'use client';
+
 import * as THREE from 'three';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei'; // Import OrbitControls
@@ -18,7 +20,7 @@ const Points: React.FC = () => {
 
   const count = 100;
   const sep = 3;
-  const downwardOffset = -40; // Adjust this value to move points downward
+  const downwardOffset = -15; // Adjust this value to move points downward
 
   // Generate initial positions for the points
   const positions = useMemo(() => {
