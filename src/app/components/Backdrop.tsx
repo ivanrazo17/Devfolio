@@ -1,9 +1,8 @@
-'use client';
-
 import * as THREE from 'three';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei'; // Import OrbitControls
-import { Suspense, useCallback, useMemo, useRef } from 'react';
+import { Suspense, useCallback, useMemo, useRef, useEffect, useState } from 'react';
+import { animated, useSpring } from '@react-spring/web'; // Import animated and useSpring
 
 const Points: React.FC = () => {
   const imgTex = useLoader(THREE.TextureLoader, './circle.png');
@@ -95,16 +94,37 @@ const Points: React.FC = () => {
 
 // Define the BackdropCanvas component with OrbitControls
 const BackdropCanvas: React.FC = () => {
+  const [triggered, setTriggered] = useState(false);
+
+  const props = useSpring({
+    backgroundColor: triggered ? 'black' : 'white',
+    config: { duration: 2000 }, // Duration of the animation in milliseconds
+    reset: false
+  });
+
+  useEffect(() => {
+    // Trigger the background color change only once when the component mounts
+    setTriggered(true);
+  }, []);
+
   return (
-    <Canvas
-      camera={{ position: [100, 10, 0], fov: 75 }} // Adjust camera position
-      style={{ height: '100vh', width: '100vw', background: '#000000' }} // Set canvas size and background color
+    <animated.div
+      style={{
+        height: '100vh',
+        width: '100vw',
+        ...props
+      }}
     >
-      <Suspense fallback={null}>
-        <Points />
-      </Suspense>
-      <OrbitControls autoRotate autoRotateSpeed={-0.2} /> {/* Add OrbitControls */}
-    </Canvas>
+      <Canvas
+        camera={{ position: [100, 10, 0], fov: 75 }} // Adjust camera position
+        style={{ height: '100%', width: '100%' }} // Set canvas size
+      >
+        <Suspense fallback={null}>
+          <Points />
+        </Suspense>
+        <OrbitControls autoRotate autoRotateSpeed={-0.2} /> {/* Add OrbitControls */}
+      </Canvas>
+    </animated.div>
   );
 };
 

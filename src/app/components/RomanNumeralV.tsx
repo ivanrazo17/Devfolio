@@ -30,7 +30,7 @@ const NeonBar: React.FC<NeonBarProps> = ({ triggerAnimation, position, width }) 
     }, [triggerAnimation, api]);
 
     // Same properties as the main Box
-    const boxArgs: [number, number, number] = [width, 25, 1];
+    const boxArgs: [number, number, number] = [width / 2, 20, 1];
     const materialProps = {
         emissive: "#5888A5",
         emissiveIntensity: 3,
@@ -46,12 +46,18 @@ const NeonBar: React.FC<NeonBarProps> = ({ triggerAnimation, position, width }) 
             scale={springProps.scale as unknown as [number, number, number]}
             renderOrder={0} // Ensure this is rendered behind other objects if needed
         >
-            {/* NeonBar Box */}
-            <animated.mesh>
-                <Box args={boxArgs}>
-                    <animated.meshStandardMaterial {...materialProps} />
-                </Box>
-            </animated.mesh>
+            {/* Left leg of V */}
+            <animated.mesh position={[-width / 3, 0, 0]} rotation={[0, 0, Math.PI / 100]}>
+                    <Box args={boxArgs}>
+                        <animated.meshStandardMaterial {...materialProps} />
+                    </Box>
+                </animated.mesh>
+                {/* Right leg of V */}
+                <animated.mesh position={[width / 3, 0, 0]} rotation={[0, 0, -Math.PI / 100]}>
+                    <Box args={boxArgs}>
+                        <animated.meshStandardMaterial {...materialProps} />
+                    </Box>
+                </animated.mesh>
         </animated.group>
         
     );

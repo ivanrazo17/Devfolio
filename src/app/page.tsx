@@ -1,23 +1,29 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // Import useRouter from next/navigation
 import PongLoader from './PongLoader'; // Adjust path as needed
-import Project from './projects/page';
 import Backdrop from './components/Backdrop';
-import AboutPage from './about/page';
+import AboutPage from './about/page'; // Adjust path as needed
 import './globals.css';
 
 const Home: React.FC = () => {
-  // Simulate a condition to display the loader
-  // For demonstration purposes, this will show the loader for 3 seconds and then hide it
-  // Adjust this logic based on how you want to control loading visibility
+  const [isLoading, setIsLoading] = useState(true);
+  const [aboutPageVisible, setAboutPageVisible] = useState(false); // Initially false to show loader
+  const router = useRouter(); // Initialize useRouter
 
-  const [isLoading, setIsLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 3000); // Adjust delay as needed
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      setAboutPageVisible(true); // Show AboutPage after loader
+    }, 3000); // Adjust delay as needed
     return () => clearTimeout(timer);
   }, []);
+
+  const handleAboutPageLoad = () => {
+    setAboutPageVisible(false); // Hide AboutPage after loading is complete
+    router.push('/projects'); // Navigate to /projects when AboutPage loading is complete
+  };
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
@@ -25,19 +31,21 @@ const Home: React.FC = () => {
         <PongLoader />
       ) : (
         <>
-          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 2 }}>
-            <AboutPage />
-          </div>
-
-          {/* Backdrop as the full-screen background */}
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1 }}>
-            <Backdrop />
-          </div>
-
-          {/* NeonLights positioned fixed to remain visible during scroll */}
-          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1 }}>
-            <Project />
-          </div>
+          {/* Render AboutPage with higher zIndex */}
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 3, // Ensure it is on top
+              transition: 'opacity 0.5s',
+              opacity: aboutPageVisible ? 1 : 0, // Fade out effect
+            }}
+          >
+            <AboutPage onFinishLoading={handleAboutPageLoad} />
+          </div>          
         </>
       )}
     </div>
