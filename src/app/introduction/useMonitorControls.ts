@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSpring } from '@react-spring/web';
 
 export const useMonitorControls = (
@@ -12,14 +12,14 @@ export const useMonitorControls = (
   const [dragging, setDragging] = useState(false);
   const [startDragY, setStartDragY] = useState<number | null>(null);
   const [dragOffsetY, setDragOffsetY] = useState(0);
-  
-  const [springProps, setSpring] = useSpring(() => ({
+
+  const [springProps, api] = useSpring(() => ({
     transform: 'scale(1) translateY(0)',
     opacity: 1,
     config: { tension: 280, friction: 60 },
   }));
 
-  const handleScroll = (event: WheelEvent) => {
+  const handleScroll = useCallback((event: WheelEvent) => {
     if (dragging) return;
 
     event.preventDefault();
@@ -30,16 +30,16 @@ export const useMonitorControls = (
     } else {
       setScale((prev) => Math.min(prev + increment, MAX_SCALE));
     }
-  };
+  }, [dragging, setScale, MIN_SCALE, MAX_SCALE]);
 
-  const handleMouseMove = (event: MouseEvent) => {
+  const handleMouseMove = useCallback((event: MouseEvent) => {
     if (!dragging || startDragY === null) return;
 
     const newDragY = event.clientY - startDragY;
     setDragOffsetY(newDragY);
 
     if (newDragY > 100) {
-      setSpring.start({
+      api.start({
         transform: `scale(${scale / 80}) translateY(${newDragY}px)`,
         opacity: 1,
         onRest: () => {
@@ -50,19 +50,19 @@ export const useMonitorControls = (
         },
       });
     }
-  };
+  }, [dragging, startDragY, scale, api, setIsHidden, onFinishLoading]);
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     setDragging(false);
 
     if (dragOffsetY < 200) {
-      setSpring.start({
+      api.start({
         transform: 'scale(1) translateY(0)',
         opacity: 1,
       });
       setDragOffsetY(0);
     }
-  };
+  }, [dragOffsetY, api]);
 
   useEffect(() => {
     window.addEventListener('wheel', handleScroll, { passive: false });
@@ -74,7 +74,7 @@ export const useMonitorControls = (
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [dragging, startDragY, scale, dragOffsetY]);
+  }, [handleScroll, handleMouseMove, handleMouseUp]);
 
-  return { springProps, setDragging, setStartDragY, dragOffsetY, dragging }; // Add dragging to return
+  return { springProps, setDragging, setStartDragY, dragOffsetY, dragging };
 };

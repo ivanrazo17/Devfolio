@@ -3,13 +3,12 @@ import { Sphere, Text } from '@react-three/drei';
 import { animated, useSpring } from '@react-spring/three';
 import * as THREE from 'three';
 
-
-const debounce = (func: Function, wait: number) => {
+const debounce = <T extends (...args: any[]) => void>(func: T, wait: number): T => {
     let timeout: NodeJS.Timeout;
-    return (...args: any[]) => {
+    return ((...args: any[]) => {
         clearTimeout(timeout);
         timeout = setTimeout(() => func(...args), wait);
-    };
+    }) as T;
 };
 
 interface RotatingSphereProps {
@@ -21,26 +20,27 @@ const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation, proje
     const [sphereSize, setSphereSize] = useState<number>(6);
     const [textSize, setTextSize] = useState<number>(1);
 
+    const handleResize = useCallback(() => {
+        if (window.innerWidth <= 767) {
+            setSphereSize(5);
+            setTextSize(0.32);
+        } else {
+            setSphereSize(6);
+            setTextSize(1);
+        }
+    }, []);
 
-    const handleResize = useCallback(
-        debounce(() => {
-            if (window.innerWidth <= 767) {
-                setSphereSize(5);
-                setTextSize(0.32);
-            } else {
-                setSphereSize(6);
-                setTextSize(1);
-            }
-        }, 150), 
-        []
+    const debouncedHandleResize = useCallback(
+        debounce(handleResize, 150),
+        [handleResize]
     );
 
     useEffect(() => {
-        window.addEventListener('resize', handleResize);
-        handleResize(); // Initial check
+        window.addEventListener('resize', debouncedHandleResize);
+        debouncedHandleResize(); // Initial check
 
-        return () => window.removeEventListener('resize', handleResize);
-    }, [handleResize]);
+        return () => window.removeEventListener('resize', debouncedHandleResize);
+    }, [debouncedHandleResize]);
 
     const [springProps, api] = useSpring(() => ({
         rotation: [Math.PI / 100, 0, 0],
@@ -80,11 +80,11 @@ const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation, proje
             position={[0, 0, 0]}
         >
             <Sphere args={[sphereSize, 64, 64]}>
-                <meshStandardMaterial color="black"/>
+                <meshStandardMaterial color="black" />
             </Sphere>
             <group ref={textRef}>
                 <Text
-                    position={[0, 0, sphereSize + 1]} 
+                    position={[0, 0, sphereSize + 1]}
                     fontSize={textSize}
                     color="white"
                     anchorX="center"

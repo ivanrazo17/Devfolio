@@ -18,18 +18,19 @@ const LogoRender: React.FC<ModelProps> = ({ url, position = [0, 0, 0], scale = [
     const handleMouseMove = (event: MouseEvent) => {
       const maxRotation = Math.PI / 6; // 30 degrees
       const yRotation = -((event.clientX / window.innerWidth) - 0.5) * 2 * maxRotation; // Inverted rotation
-      setRotation({ x: rotation.x, y: Math.max(-maxRotation, Math.min(yRotation, maxRotation)) });
+      setRotation(prevRotation => ({
+        x: prevRotation.x,
+        y: Math.max(-maxRotation, Math.min(yRotation, maxRotation)),
+      }));
     };
 
     window.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [rotation.x]);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []); // No need to include rotation in dependency array here
 
   useEffect(() => {
     if (modelRef.current && scene) {
-      modelRef.current.traverse((child) => {
+      modelRef.current.traverse(child => {
         if (child instanceof Mesh) {
           child.material = new MeshStandardMaterial({
             color: 'white',
@@ -52,7 +53,10 @@ const LogoRender: React.FC<ModelProps> = ({ url, position = [0, 0, 0], scale = [
         const deltaX = touchEndX - touchStartX;
         const maxRotation = Math.PI / 6; // 30 degrees
         const newYRotation = rotation.y + deltaX * 0.01; // Adjust sensitivity as needed
-        setRotation({ x: rotation.x, y: Math.max(-maxRotation, Math.min(newYRotation, maxRotation)) });
+        setRotation(prevRotation => ({
+          x: prevRotation.x,
+          y: Math.max(-maxRotation, Math.min(newYRotation, maxRotation)),
+        }));
         setTouchStartX(touchEndX);
       }
     };

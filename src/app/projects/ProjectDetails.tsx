@@ -18,11 +18,13 @@ interface ProjectDetailsProps {
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnimation }) => {
   const project = ProjectList.find(p => p.projectNum === projectNum);
 
+  // Handle case where project is not found
   if (!project) {
     return <h1 className={`${roboto.className} text-white`}>Project not found</h1>;
   }
 
-  const { opacity } = useSpring({
+  // Spring configuration
+  const springConfig = {
     opacity: triggerAnimation ? 0 : 1,
     config: { 
       duration: triggerAnimation ? -1 : 500,
@@ -30,12 +32,15 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
       friction: 25,
     },
     delay: triggerAnimation ? 0 : 300, 
-  });
+  };
+
+  const opacity = useSpring(springConfig);
 
   const buttonText = project.status === 'Completed' ? 'View Project' : 'Not Available Yet';
   const buttonColor = project.status === 'Completed' ? '#006F9F' : '#ED6968';
   const textColor = project.status === 'Completed' ? 'cyan' : '#ED6968';
 
+  // Pulsing animation for scroll arrows
   const pulseSpring = useSpring({
     from: { transform: 'scale(1)' },
     to: { transform: 'scale(1.1)' },
@@ -44,16 +49,17 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
     loop: { reverse: true }
   });
 
+  // Combined spring style for the scroll arrows
   const combinedSpring = {
     transform: pulseSpring.transform,
-    opacity,
+    opacity: opacity.opacity,
   };
 
   return (
     <div className="w-full lg:w-[600px] lg:relative bg-gradient-to-t from-black xl:from-transparent">
       <animated.div
         className={`${roboto.className} p-10 bg-transparent text-white `}
-        style={{ opacity }}
+        style={{ opacity: opacity.opacity }}
       >
         <h1 className='text-2xl lg:text-5xl font-extrabold'>{project.projectName}</h1>
         <div className='flex items-center'>
@@ -115,8 +121,6 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
           <ChevronsDown className='text-white w-[20px]' />
         </animated.div>
       </div>
-
-
     </div>
   );
 };
