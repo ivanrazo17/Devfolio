@@ -17,12 +17,7 @@ interface ProjectDetailsProps {
 
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnimation }) => {
   const project = ProjectList.find(p => p.projectNum === projectNum);
-
-  // Handle case where project is not found
-  if (!project) {
-    return <h1 className={`${roboto.className} text-white`}>Project not found</h1>;
-  }
-
+  
   // Define spring configurations
   const opacitySpring = useSpring({
     opacity: triggerAnimation ? 0 : 1,
@@ -42,6 +37,10 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
     loop: { reverse: true }
   });
 
+  // Handle case where project is not found
+  if (!project) {
+    return <h1 className={`${roboto.className} text-white`}>Project not found</h1>;
+  }
   const buttonText = project.status === 'Completed' ? 'View Project' : 'Not Available Yet';
   const buttonColor = project.status === 'Completed' ? '#006F9F' : '#ED6968';
   const textColor = project.status === 'Completed' ? 'cyan' : '#ED6968';
