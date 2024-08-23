@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Sphere, Text } from '@react-three/drei';
 import { animated, useSpring } from '@react-spring/three';
 import * as THREE from 'three';
@@ -22,7 +22,7 @@ const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation, proje
     const [textSize, setTextSize] = useState<number>(1);
 
     // Resize handler
-    const handleResize = useCallback(() => {
+    const handleResize = () => {
         if (window.innerWidth <= 767) {
             setSphereSize(5);
             setTextSize(0.32);
@@ -30,32 +30,25 @@ const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation, proje
             setSphereSize(6);
             setTextSize(1);
         }
-    }, []);
+    };
 
-    // Debounce wrapper for handleResize
-    const debouncedHandleResize = useCallback(
-        debounce(handleResize, 150),
-        [handleResize]
-    );
+    const debouncedHandleResize = debounce(handleResize, 150);
 
-    // Effect to handle resize event
     useEffect(() => {
         window.addEventListener('resize', debouncedHandleResize);
-        debouncedHandleResize(); // Initial check
+        handleResize(); // Initial check
 
         return () => {
             window.removeEventListener('resize', debouncedHandleResize);
         };
     }, [debouncedHandleResize]);
 
-    // Spring animation setup
     const [springProps, api] = useSpring(() => ({
         rotation: [Math.PI / 100, 0, 0],
         config: { mass: 1, tension: 80, friction: 10 },
         reset: true,
     }));
 
-    // Effect to trigger animation based on prop
     useEffect(() => {
         if (triggerAnimation) {
             api.start({
@@ -67,7 +60,6 @@ const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation, proje
         }
     }, [triggerAnimation, api]);
 
-    // Text ref and lookAt effect
     const textRef = useRef<THREE.Group>(null);
 
     useEffect(() => {
