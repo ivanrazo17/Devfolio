@@ -37,6 +37,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
     loop: { reverse: true }
   });
 
+  const combinedSpring = {
+    transform: pulseSpring.transform,
+    opacity: opacitySpring.opacity,
+  };
+
   // Handle case where project is not found
   if (!project) {
     return <h1 className={`${roboto.className} text-white`}>Project not found</h1>;
@@ -44,11 +49,6 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
   const buttonText = project.status === 'Completed' ? 'View Project' : 'Not Available Yet';
   const buttonColor = project.status === 'Completed' ? '#006F9F' : '#ED6968';
   const textColor = project.status === 'Completed' ? 'cyan' : '#ED6968';
-
-  const combinedSpring = {
-    transform: pulseSpring.transform,
-    opacity: opacitySpring.opacity,
-  };
 
   return (
     <div className="w-full lg:w-[600px] lg:relative bg-gradient-to-t from-black xl:from-transparent">
