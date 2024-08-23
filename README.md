@@ -11,7 +11,7 @@ Devfolio features:
 - **ANIMATED COMPONENTS**: Utilizes React Spring for fluid and visually appealing animations throughout the site.
 - **MODERN UI ELEMENTS**: Incorporates MagicUI for consistent and polished user interface components.
 
-![Website Thumbnail](/public/thumbnail.png)
+![Website Thumbnail](/public/thumbnail.PNG)
 
 ## Tech Stack
 
