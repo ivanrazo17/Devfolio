@@ -20,11 +20,7 @@ const Lighting: React.FC = () => (
   </>
 );
 
-interface ProjectProps {
-  aboutPageVisible: boolean;
-}
-
-const Project: React.FC<ProjectProps> = ({ aboutPageVisible }) => {
+const Project: React.FC = () => {
   const [triggerAnimation, setTriggerAnimation] = useState(false);
   const [animationStarted, setAnimationStarted] = useState(false);
   const [showSphere, setShowSphere] = useState(false);
@@ -36,7 +32,7 @@ const Project: React.FC<ProjectProps> = ({ aboutPageVisible }) => {
 
   // Debounced handle scroll
   const handleScroll = useCallback((event: WheelEvent) => {
-    if (!aboutPageVisible && !animationStarted) {
+    if (!animationStarted) {
       if (event.deltaY > 0) {
         setTriggerAnimation(true);
         setAnimationStarted(true);
@@ -47,7 +43,7 @@ const Project: React.FC<ProjectProps> = ({ aboutPageVisible }) => {
         setCurrentProjectIndex(prev => (prev - 1 + ProjectList.length) % ProjectList.length);
       }
     }
-  }, [aboutPageVisible, animationStarted]);
+  }, [animationStarted]);
 
   // Debounced handle touch
   const handleTouchStart = useCallback((event: TouchEvent) => {
@@ -63,7 +59,7 @@ const Project: React.FC<ProjectProps> = ({ aboutPageVisible }) => {
       const { clientY } = event.touches[0];
       const deltaY = clientY - touchStart;
 
-      if (!aboutPageVisible && !animationStarted) {
+      if (!animationStarted) {
         if (deltaY > 75) { 
           setTriggerAnimation(true);
           setAnimationStarted(true);
@@ -77,21 +73,19 @@ const Project: React.FC<ProjectProps> = ({ aboutPageVisible }) => {
         }
       }
     }
-  }, [aboutPageVisible, animationStarted]);
+  }, [animationStarted]);
 
   useEffect(() => {
-    if (!aboutPageVisible) {
-      window.addEventListener('wheel', handleScroll, { passive: true });
-      window.addEventListener('touchstart', handleTouchStart, { passive: true });
-      window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('wheel', handleScroll, { passive: true });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
 
-      return () => {
-        window.removeEventListener('wheel', handleScroll);
-        window.removeEventListener('touchstart', handleTouchStart);
-        window.removeEventListener('touchmove', handleTouchMove);
-      };
-    }
-  }, [aboutPageVisible, handleScroll, handleTouchStart, handleTouchMove]);
+    return () => {
+      window.removeEventListener('wheel', handleScroll);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, [handleScroll, handleTouchStart, handleTouchMove]);
 
   useEffect(() => {
     const sequence = async () => {
@@ -134,21 +128,15 @@ const Project: React.FC<ProjectProps> = ({ aboutPageVisible }) => {
         <NavBar/>
       </div>
       
-      <div className={`fixed top-0 left-0 right-0 bottom-0 z-[1] transition-opacity duration-1000 ${
-          aboutPageVisible ? 'pointer-events-none opacity-0' : 'pointer-events-auto opacity-100'
-        }`}
-      >
+      <div className={`fixed top-0 left-0 right-0 bottom-0 z-[1] transition-opacity duration-1000`}>
         <BackdropCanvas />
       </div>
 
-      <div className="fixed bottom-0 translate-x-0 lg:top-1/2 lg:left-0 lg:-translate-y-1/2 lg:p-[6rem] z-[3] pointer-events-auto">
+      <div className="fixed bottom-0 translate-x-0 lg:top-1/2 lg:left-0 lg:-translate-y-1/2 lg:p-[6rem] z-[4] pointer-events-auto">
         <ProjectDetails projectNum={currentProject.projectNum} triggerAnimation={triggerAnimation}  />
       </div>
 
-      <div className={`fixed top-0 left-0 right-0 bottom-0 z-[2] transition-opacity duration-1000 ${
-          aboutPageVisible ? 'pointer-events-none opacity-0' : 'pointer-events-auto opacity-100'
-        }`}
-      >
+      <div className={`fixed top-0 left-0 right-0 bottom-0 z-[2] transition-opacity duration-1000`}>
         <Canvas style={{ height: '100vh', width: '100vw', pointerEvents: 'none' }} camera={{ position: [0, 0, 10], fov: 75 }}>
           <Lighting />
 
@@ -181,7 +169,6 @@ const Project: React.FC<ProjectProps> = ({ aboutPageVisible }) => {
             scale={currentProject.scale}
           />
           
-          {/* Conditionally render SmokeEffects based on device size */}
           {!isSmallDevice && showSphere && <SmokeEffects textureUrl="/smoke.png" triggerAnimation={triggerAnimation} />}
           
           <EffectComposer>
