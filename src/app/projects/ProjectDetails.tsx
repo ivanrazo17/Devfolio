@@ -23,18 +23,16 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
     return <h1 className={`${roboto.className} text-white`}>Project not found</h1>;
   }
 
-  // Spring configuration
-  const springConfig = {
+  // Always call useSpring, adjust based on conditions
+  const opacity = useSpring({
     opacity: triggerAnimation ? 0 : 1,
     config: { 
       duration: triggerAnimation ? -1 : 500,
       tension: 200,
       friction: 25,
     },
-    delay: triggerAnimation ? 0 : 300, 
-  };
-
-  const opacity = useSpring(springConfig);
+    delay: triggerAnimation ? 0 : 300,
+  });
 
   const buttonText = project.status === 'Completed' ? 'View Project' : 'Not Available Yet';
   const buttonColor = project.status === 'Completed' ? '#006F9F' : '#ED6968';
@@ -58,7 +56,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
   return (
     <div className="w-full lg:w-[600px] lg:relative bg-gradient-to-t from-black xl:from-transparent">
       <animated.div
-        className={`${roboto.className} p-10 bg-transparent text-white `}
+        className={`${roboto.className} p-10 bg-transparent text-white`}
         style={{ opacity: opacity.opacity }}
       >
         <h1 className='text-2xl lg:text-5xl font-extrabold'>{project.projectName}</h1>
@@ -110,7 +108,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
       
       {/* Scroll to Cycle and Arrows */}
       <div className='absolute top-[15%] right-[5%] lg:-left-[100%] lg:top-[25%] flex items-center justify-center'>
-        <animated.div style={combinedSpring} className='flex flex-col items-center '>
+        <animated.div style={combinedSpring} className='flex flex-col items-center'>
           <ChevronsUp className='text-white w-[20px]' />
           <div className='lg:hidden text-white text-[12px] my-2' style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
             Drag to Cycle
