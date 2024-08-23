@@ -6,11 +6,8 @@ import MonitorCanvas from './MonitorCanvas';
 import { useMonitorControls } from './useMonitorControls';
 import { useRouter } from 'next/navigation';
 
-interface IntroPageProps {
-  onFinishLoading: () => void; // Function that does not return a value
-}
 
-const IntroPage: React.FC<IntroPageProps> = ({ onFinishLoading }) => {
+const IntroPage: React.FC = () => {
   const [scale, setScale] = useState<number>(100);
   const [isHidden, setIsHidden] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 768); // Example breakpoint
@@ -44,7 +41,6 @@ const IntroPage: React.FC<IntroPageProps> = ({ onFinishLoading }) => {
     () => {
       // When dragging is finished, call the onFinishLoading callback
       setIsHidden(true);
-      onFinishLoading(); // Call the provided callback function
     },
     setScale,
     setIsHidden

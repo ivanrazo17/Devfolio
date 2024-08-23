@@ -46,7 +46,6 @@ const Home: React.FC = () => {
             opacity: introPageVisible ? 1 : 0,
           }}
         >
-          {/* You can render anything else here if needed */}
         </div>
       )}
     </div>
