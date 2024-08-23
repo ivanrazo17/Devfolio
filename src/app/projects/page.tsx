@@ -25,7 +25,22 @@ const Project: React.FC = () => {
   const [animationStarted, setAnimationStarted] = useState(false);
   const [showSphere, setShowSphere] = useState(false);
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
-  const [isSmallDevice, setIsSmallDevice] = useState(window.innerWidth < 768); // Assuming 768px as the breakpoint for small devices
+  const [isSmallDevice, setIsSmallDevice] = useState(false); // Default to false
+
+  useEffect(() => {
+    // Check if window is available
+    if (typeof window !== 'undefined') {
+      setIsSmallDevice(window.innerWidth < 768);
+
+      const handleResize = () => setIsSmallDevice(window.innerWidth < 768);
+
+      window.addEventListener('resize', handleResize);
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }
+  }, []);
 
   const currentProject = ProjectList[currentProjectIndex];
   const { projectNum } = currentProject;
@@ -76,15 +91,17 @@ const Project: React.FC = () => {
   }, [animationStarted]);
 
   useEffect(() => {
-    window.addEventListener('wheel', handleScroll, { passive: true });
-    window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    if (typeof window !== 'undefined') {
+      window.addEventListener('wheel', handleScroll, { passive: true });
+      window.addEventListener('touchstart', handleTouchStart, { passive: true });
+      window.addEventListener('touchmove', handleTouchMove, { passive: true });
 
-    return () => {
-      window.removeEventListener('wheel', handleScroll);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-    };
+      return () => {
+        window.removeEventListener('wheel', handleScroll);
+        window.removeEventListener('touchstart', handleTouchStart);
+        window.removeEventListener('touchmove', handleTouchMove);
+      };
+    }
   }, [handleScroll, handleTouchStart, handleTouchMove]);
 
   useEffect(() => {
@@ -106,14 +123,6 @@ const Project: React.FC = () => {
 
     sequence();
   }, [animationStarted]);
-
-  // Handle screen size changes
-  useEffect(() => {
-    const handleResize = () => setIsSmallDevice(window.innerWidth < 768);
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const barSpacing = 150;
   const totalWidth = projectNum * barSpacing; // Total width for all bars

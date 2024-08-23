@@ -6,11 +6,10 @@ import MonitorCanvas from './MonitorCanvas';
 import { useMonitorControls } from './useMonitorControls';
 import { useRouter } from 'next/navigation';
 
-
 const IntroPage: React.FC = () => {
   const [scale, setScale] = useState<number>(100);
   const [isHidden, setIsHidden] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 768); // Example breakpoint
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   const router = useRouter(); // Initialize useRouter
 
@@ -18,8 +17,19 @@ const IntroPage: React.FC = () => {
   const MAX_SCALE = 100;
 
   useEffect(() => {
+    // Function to check if the device is mobile
+    const checkMobile = () => {
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth <= 768);
+      }
+    };
+
+    checkMobile(); // Set initial value
+
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Example breakpoint
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth <= 768);
+      }
     };
 
     window.addEventListener('resize', handleResize);
