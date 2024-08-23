@@ -7,7 +7,7 @@ import { useMonitorControls } from './useMonitorControls';
 import { useRouter } from 'next/navigation';
 
 interface IntroPageProps {
-  onFinishLoading: () => void;
+  onFinishLoading: () => void; // Function that does not return a value
 }
 
 const IntroPage: React.FC<IntroPageProps> = ({ onFinishLoading }) => {
@@ -41,7 +41,11 @@ const IntroPage: React.FC<IntroPageProps> = ({ onFinishLoading }) => {
     scale,
     MIN_SCALE,
     MAX_SCALE,
-    onFinishLoading,
+    () => {
+      // When dragging is finished, call the onFinishLoading callback
+      setIsHidden(true);
+      onFinishLoading(); // Call the provided callback function
+    },
     setScale,
     setIsHidden
   );
@@ -56,6 +60,12 @@ const IntroPage: React.FC<IntroPageProps> = ({ onFinishLoading }) => {
   const handleButtonClick = () => {
     router.push('/projects');
   };
+
+  useEffect(() => {
+    if (isHidden) {
+      router.push('/projects'); // Navigate to /projects after hiding the monitor
+    }
+  }, [isHidden, router]);
 
   return (
     <div className="relative w-full h-screen overflow-hidden" onMouseDown={handleMouseDown}>
@@ -103,11 +113,9 @@ const IntroPage: React.FC<IntroPageProps> = ({ onFinishLoading }) => {
             onClick={handleButtonClick}
             className="px-4 py-2 bg-[#151030] text-white rounded shadow-lg"
             style={{
-             
               boxShadow: '0 0 10px 10px rgba(145, 94, 255, 0.5)',
               whiteSpace: 'nowrap'
             }}
-            
           >
             Go to Projects
           </button>
