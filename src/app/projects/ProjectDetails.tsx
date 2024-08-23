@@ -23,7 +23,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
     return <h1 className={`${roboto.className} text-white`}>Project not found</h1>;
   }
 
-  // Always call useSpring, then adjust the configuration based on conditions
+  // Always call useSpring hooks
   const opacitySpring = useSpring({
     opacity: triggerAnimation ? 0 : 1,
     config: { 
@@ -34,11 +34,6 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
     delay: triggerAnimation ? 0 : 300,
   });
 
-  const buttonText = project.status === 'Completed' ? 'View Project' : 'Not Available Yet';
-  const buttonColor = project.status === 'Completed' ? '#006F9F' : '#ED6968';
-  const textColor = project.status === 'Completed' ? 'cyan' : '#ED6968';
-
-  // Pulsing animation for scroll arrows
   const pulseSpring = useSpring({
     from: { transform: 'scale(1)' },
     to: { transform: 'scale(1.1)' },
@@ -47,7 +42,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
     loop: { reverse: true }
   });
 
-  // Combined spring style for the scroll arrows
+  // Compute styles conditionally based on the hook results
+  const buttonText = project.status === 'Completed' ? 'View Project' : 'Not Available Yet';
+  const buttonColor = project.status === 'Completed' ? '#006F9F' : '#ED6968';
+  const textColor = project.status === 'Completed' ? 'cyan' : '#ED6968';
+
   const combinedSpring = {
     transform: pulseSpring.transform,
     opacity: opacitySpring.opacity,

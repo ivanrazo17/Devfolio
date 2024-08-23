@@ -3,6 +3,7 @@ import { Sphere, Text } from '@react-three/drei';
 import { animated, useSpring } from '@react-spring/three';
 import * as THREE from 'three';
 
+// A stable debounce function implementation
 const debounce = <T extends (...args: any[]) => void>(func: T, wait: number): T => {
     let timeout: NodeJS.Timeout;
     return ((...args: any[]) => {
@@ -20,6 +21,7 @@ const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation, proje
     const [sphereSize, setSphereSize] = useState<number>(6);
     const [textSize, setTextSize] = useState<number>(1);
 
+    // Resize handler
     const handleResize = useCallback(() => {
         if (window.innerWidth <= 767) {
             setSphereSize(5);
@@ -30,24 +32,30 @@ const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation, proje
         }
     }, []);
 
+    // Debounce wrapper for handleResize
     const debouncedHandleResize = useCallback(
         debounce(handleResize, 150),
-        [handleResize] // handleResize is stable
+        [handleResize]
     );
 
+    // Effect to handle resize event
     useEffect(() => {
         window.addEventListener('resize', debouncedHandleResize);
         debouncedHandleResize(); // Initial check
 
-        return () => window.removeEventListener('resize', debouncedHandleResize);
+        return () => {
+            window.removeEventListener('resize', debouncedHandleResize);
+        };
     }, [debouncedHandleResize]);
 
+    // Spring animation setup
     const [springProps, api] = useSpring(() => ({
         rotation: [Math.PI / 100, 0, 0],
         config: { mass: 1, tension: 80, friction: 10 },
         reset: true,
     }));
 
+    // Effect to trigger animation based on prop
     useEffect(() => {
         if (triggerAnimation) {
             api.start({
@@ -59,6 +67,7 @@ const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation, proje
         }
     }, [triggerAnimation, api]);
 
+    // Text ref and lookAt effect
     const textRef = useRef<THREE.Group>(null);
 
     useEffect(() => {
@@ -68,10 +77,12 @@ const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation, proje
             }
         };
 
+        handle(); // Initial call
         window.addEventListener('resize', handle);
-        handle();
 
-        return () => window.removeEventListener('resize', handle);
+        return () => {
+            window.removeEventListener('resize', handle);
+        };
     }, []); // No dependencies needed for this effect
 
     return (
