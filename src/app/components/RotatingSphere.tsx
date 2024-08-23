@@ -32,7 +32,7 @@ const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation, proje
 
     const debouncedHandleResize = useCallback(
         debounce(handleResize, 150),
-        [handleResize]
+        [handleResize] // handleResize is stable
     );
 
     useEffect(() => {
@@ -72,7 +72,7 @@ const RotatingSphere: React.FC<RotatingSphereProps> = ({ triggerAnimation, proje
         handle();
 
         return () => window.removeEventListener('resize', handle);
-    }, []);
+    }, []); // No dependencies needed for this effect
 
     return (
         <animated.group

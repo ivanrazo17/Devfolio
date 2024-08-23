@@ -23,8 +23,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
     return <h1 className={`${roboto.className} text-white`}>Project not found</h1>;
   }
 
-  // Always call useSpring, adjust based on conditions
-  const opacity = useSpring({
+  // Always call useSpring, then adjust the configuration based on conditions
+  const opacitySpring = useSpring({
     opacity: triggerAnimation ? 0 : 1,
     config: { 
       duration: triggerAnimation ? -1 : 500,
@@ -50,14 +50,14 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
   // Combined spring style for the scroll arrows
   const combinedSpring = {
     transform: pulseSpring.transform,
-    opacity: opacity.opacity,
+    opacity: opacitySpring.opacity,
   };
 
   return (
     <div className="w-full lg:w-[600px] lg:relative bg-gradient-to-t from-black xl:from-transparent">
       <animated.div
         className={`${roboto.className} p-10 bg-transparent text-white`}
-        style={{ opacity: opacity.opacity }}
+        style={{ opacity: opacitySpring.opacity }}
       >
         <h1 className='text-2xl lg:text-5xl font-extrabold'>{project.projectName}</h1>
         <div className='flex items-center'>
