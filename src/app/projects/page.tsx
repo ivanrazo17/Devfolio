@@ -1,37 +1,27 @@
-'use client'
-import React, { useState, useEffect } from 'react';
+'use client';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import NeonBar from '../components/NeonBar';
 import RotatingSphere from '../components/RotatingSphere';
 import Stage from '../components/Stage';
-import ProjectList from './ProjectList'; // Adjust import path as necessary
-import RomanNumeralV from '../components/RomanNumeralV'; // Import RomanNumeralV component
+import ProjectList from './ProjectList'; 
+import RomanNumeralV from '../components/RomanNumeralV';
 import SmokeEffects from '../components/SmokeEffects';
-import ProjectDetails from './ProjectDetails'; // Import ProjectDetails component
+import ProjectDetails from './ProjectDetails'; 
 import BackdropCanvas from '../components/Backdrop';
+import NavBar from '../components/NavBar';
 
-const Lighting: React.FC = () => {
-  return (
-    <>
-      <pointLight
-        position={[0, 0, -1]}
-        intensity={50}
-        color='#457A8F'
-      />
-      <rectAreaLight
-        position={[0, 0, -2.8]}
-        width={4}
-        height={10}
-        intensity={5}
-        color='#457A8F'
-      />
-    </>
-  );
-};
+// Lighting component
+const Lighting: React.FC = () => (
+  <>
+    <pointLight position={[0, 0, -1]} intensity={50} color='#457A8F' />
+    <rectAreaLight position={[0, 0, -2.8]} width={4} height={10} intensity={5} color='#457A8F' />
+  </>
+);
 
 interface ProjectProps {
-  aboutPageVisible: boolean; // New prop to control scroll behavior
+  aboutPageVisible: boolean;
 }
 
 const Project: React.FC<ProjectProps> = ({ aboutPageVisible }) => {
@@ -39,48 +29,82 @@ const Project: React.FC<ProjectProps> = ({ aboutPageVisible }) => {
   const [animationStarted, setAnimationStarted] = useState(false);
   const [showSphere, setShowSphere] = useState(false);
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
+  const [isSmallDevice, setIsSmallDevice] = useState(window.innerWidth < 768); // Assuming 768px as the breakpoint for small devices
 
   const currentProject = ProjectList[currentProjectIndex];
   const { projectNum } = currentProject;
 
-  const handleScroll = (event: WheelEvent) => {
+  // Debounced handle scroll
+  const handleScroll = useCallback((event: WheelEvent) => {
     if (!aboutPageVisible && !animationStarted) {
       if (event.deltaY > 0) {
-        // Scrolling down
         setTriggerAnimation(true);
         setAnimationStarted(true);
         setCurrentProjectIndex(prev => (prev + 1) % ProjectList.length);
       } else if (event.deltaY < 0) {
-        // Scrolling up
         setTriggerAnimation(true);
         setAnimationStarted(true);
         setCurrentProjectIndex(prev => (prev - 1 + ProjectList.length) % ProjectList.length);
       }
     }
-  };
+  }, [aboutPageVisible, animationStarted]);
+
+  // Debounced handle touch
+  const handleTouchStart = useCallback((event: TouchEvent) => {
+    if (event.touches.length > 0) {
+      const { clientY } = event.touches[0];
+      (event.target as HTMLElement).dataset.touchStart = clientY.toString();
+    }
+  }, []);
+
+  const handleTouchMove = useCallback((event: TouchEvent) => {
+    const touchStart = parseFloat((event.target as HTMLElement).dataset.touchStart || '0');
+    if (event.touches.length > 0) {
+      const { clientY } = event.touches[0];
+      const deltaY = clientY - touchStart;
+
+      if (!aboutPageVisible && !animationStarted) {
+        if (deltaY > 75) { 
+          setTriggerAnimation(true);
+          setAnimationStarted(true);
+          setCurrentProjectIndex(prev => (prev - 1 + ProjectList.length) % ProjectList.length);
+          (event.target as HTMLElement).dataset.touchStart = clientY.toString(); 
+        } else if (deltaY < -75) { 
+          setTriggerAnimation(true);
+          setAnimationStarted(true);
+          setCurrentProjectIndex(prev => (prev + 1) % ProjectList.length);
+          (event.target as HTMLElement).dataset.touchStart = clientY.toString(); 
+        }
+      }
+    }
+  }, [aboutPageVisible, animationStarted]);
 
   useEffect(() => {
     if (!aboutPageVisible) {
-      window.addEventListener('wheel', handleScroll, { passive: false });
-      return () => window.removeEventListener('wheel', handleScroll);
+      window.addEventListener('wheel', handleScroll, { passive: true });
+      window.addEventListener('touchstart', handleTouchStart, { passive: true });
+      window.addEventListener('touchmove', handleTouchMove, { passive: true });
+
+      return () => {
+        window.removeEventListener('wheel', handleScroll);
+        window.removeEventListener('touchstart', handleTouchStart);
+        window.removeEventListener('touchmove', handleTouchMove);
+      };
     }
-  }, [aboutPageVisible, animationStarted]);
+  }, [aboutPageVisible, handleScroll, handleTouchStart, handleTouchMove]);
 
   useEffect(() => {
     const sequence = async () => {
       if (animationStarted) {
         setTriggerAnimation(true);
-        await new Promise(resolve => setTimeout(resolve, 500)); // Wait for NeonBar animations
+        await new Promise(resolve => setTimeout(resolve, 0)); // Wait for NeonBar animations
 
-        // Show the sphere and trigger model update
         setShowSphere(true);
         await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for the sphere to be fully visible
 
         setTriggerAnimation(false);
         await new Promise(resolve => setTimeout(resolve, 200)); // Wait for sphere to start disappearing
         setShowSphere(false); // Hide the sphere
-
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for bars to complete their movement
 
         setAnimationStarted(false); // Reset animation started state
       }
@@ -89,79 +113,61 @@ const Project: React.FC<ProjectProps> = ({ aboutPageVisible }) => {
     sequence();
   }, [animationStarted]);
 
-  // Use 150 units for spacing between NeonBars
+  // Handle screen size changes
+  useEffect(() => {
+    const handleResize = () => setIsSmallDevice(window.innerWidth < 768);
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const barSpacing = 150;
   const totalWidth = projectNum * barSpacing; // Total width for all bars
   const startPosition = -totalWidth / 2 + barSpacing / 2; // Start position to center bars
 
-  // Calculate position and width for RomanNumeralV
   const romanNumeralPosition: [number, number, number] = [0, 70, -700];
   const romanNumeralWidth = 1.3;
 
   return (
     <>
-      {/* Render Backdrop and Project with lower zIndex */}
-      <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 1,
-            pointerEvents: aboutPageVisible ? 'none' : 'auto', // Disable interaction when AboutPage is visible
-            transition: 'opacity 1s',
-            opacity: aboutPageVisible ? 0 : 1, // Fade in effect for Backdrop and Project
-          }}
+      <div className='fixed top-0 left-0 right-0 bottom-0 z-[4]'>
+        <NavBar/>
+      </div>
+      
+      <div className={`fixed top-0 left-0 right-0 bottom-0 z-[1] transition-opacity duration-1000 ${
+          aboutPageVisible ? 'pointer-events-none opacity-0' : 'pointer-events-auto opacity-100'
+        }`}
       >
         <BackdropCanvas />
       </div>
 
-      <div style={{
-        position: 'fixed',
-        top: '50%',
-        left: '0',
-        transform: 'translateY(-50%)',
-        padding: '6rem',
-        color: '#fff',
-        zIndex: 3, // Ensure it is higher than other components
-        pointerEvents: 'auto' // Ensure pointer events are enabled
-      }}>
+      <div className="fixed bottom-0 translate-x-0 lg:top-1/2 lg:left-0 lg:-translate-y-1/2 lg:p-[6rem] z-[3] pointer-events-auto">
         <ProjectDetails projectNum={currentProject.projectNum} triggerAnimation={triggerAnimation}  />
       </div>
 
-      <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 2,
-            pointerEvents: aboutPageVisible ? 'none' : 'auto', // Disable interaction when AboutPage is visible
-            transition: 'opacity 1s',
-            opacity: aboutPageVisible ? 0 : 1, // Fade in effect for Backdrop and Project
-          }}
-        >
-          <Canvas style={{ height: '100vh', width: '100vw', pointerEvents: 'none' }} camera={{ position: [0, 0, 10], fov: 75 }}>
+      <div className={`fixed top-0 left-0 right-0 bottom-0 z-[2] transition-opacity duration-1000 ${
+          aboutPageVisible ? 'pointer-events-none opacity-0' : 'pointer-events-auto opacity-100'
+        }`}
+      >
+        <Canvas style={{ height: '100vh', width: '100vw', pointerEvents: 'none' }} camera={{ position: [0, 0, 10], fov: 75 }}>
           <Lighting />
 
           {projectNum === 5 ? (
             <RomanNumeralV
               triggerAnimation={triggerAnimation} 
-              position={romanNumeralPosition} // Pass calculated position
-              width={romanNumeralWidth} // Pass calculated width
+              position={romanNumeralPosition} 
+              width={romanNumeralWidth} 
             />
           ) : (
             Array.from({ length: projectNum }, (_, i) => {
               const position: [number, number, number] = [startPosition + i * barSpacing, 0, -700];
-              const width = projectNum === 1 ? 1 : 0.5; // Set width based on projectNum
+              const width = projectNum === 1 ? 1 : 0.5; 
               return (
                 <NeonBar 
                   key={i} 
                   triggerAnimation={triggerAnimation} 
-                  position={position} // Calculate position
-                  width={width} // Pass width prop
+                  position={position}
+                  width={width}
                 />
               );
             })
@@ -175,7 +181,8 @@ const Project: React.FC<ProjectProps> = ({ aboutPageVisible }) => {
             scale={currentProject.scale}
           />
           
-          {showSphere && <SmokeEffects textureUrl="/smoke.png" triggerAnimation={triggerAnimation} />}
+          {/* Conditionally render SmokeEffects based on device size */}
+          {!isSmallDevice && showSphere && <SmokeEffects textureUrl="/smoke.png" triggerAnimation={triggerAnimation} />}
           
           <EffectComposer>
             <Bloom

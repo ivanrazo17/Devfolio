@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei'; // Import OrbitControls
+import { OrbitControls } from '@react-three/drei'; 
 import { Suspense, useCallback, useMemo, useRef, useEffect, useState } from 'react';
-import { animated, useSpring } from '@react-spring/web'; // Import animated and useSpring
+import { animated, useSpring } from '@react-spring/web';
 
+// Optimized Points Component
 const Points: React.FC = () => {
   const imgTex = useLoader(THREE.TextureLoader, './circle.png');
   const bufferRef = useRef<THREE.BufferAttribute>(null);
@@ -12,7 +13,7 @@ const Points: React.FC = () => {
   const f = 0.002; // Frequency of the wave
   const a = 3; // Amplitude of the wave
 
-  // Graph function for sinusoidal wave motion
+  // Memoized graph function for sinusoidal wave motion
   const graph = useCallback((x: number, z: number, t: number) => {
     return Math.sin(f * (x ** 2 + z ** 2) + t) * a;
   }, [f, a]);
@@ -21,7 +22,7 @@ const Points: React.FC = () => {
   const sep = 3;
   const downwardOffset = -15; // Adjust this value to move points downward
 
-  // Generate initial positions for the points
+  // Memoized initial positions for the points
   const positions = useMemo(() => {
     const positions: number[] = [];
     for (let xi = 0; xi < count; xi++) {
@@ -58,41 +59,28 @@ const Points: React.FC = () => {
   });
 
   return (
-    <>
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[10, 10, 10]} intensity={0.8} />
-      <pointLight position={[20, 20, 20]} intensity={1} color="white" />
-      <pointLight position={[-20, -20, -20]} intensity={0.5} color="red" />
-
-      <points>
-        <bufferGeometry>
-          <bufferAttribute
-            ref={bufferRef}
-            attach="attributes-position"
-            args={[positions, 3]} // Position array and itemSize
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          attach="material"
-          map={imgTex}
-          color={0xFFFFFF}
-          size={0.5}
-          sizeAttenuation
-          opacity={0.5} // Set opacity level (0 to 1)
-          transparent={true} // Ensure transparency is enabled
+    <points>
+      <bufferGeometry>
+        <bufferAttribute
+          ref={bufferRef}
+          attach="attributes-position"
+          args={[positions, 3]} // Position array and itemSize
         />
-      </points>
-
-      {/* Shadow Mask */}
-      <mesh position={[0, 0, -1]}>
-        <circleGeometry args={[50, 64]} />
-        <shadowMaterial opacity={0.8} /> {/* Darken outside the center */}
-      </mesh>
-    </>
+      </bufferGeometry>
+      <pointsMaterial
+        attach="material"
+        map={imgTex}
+        color={0xFFFFFF}
+        size={0.5}
+        sizeAttenuation
+        opacity={1}
+        transparent={true}
+      />
+    </points>
   );
 };
 
-// Define the BackdropCanvas component with OrbitControls
+// Optimized BackdropCanvas Component
 const BackdropCanvas: React.FC = () => {
   const [triggered, setTriggered] = useState(false);
 
@@ -116,13 +104,19 @@ const BackdropCanvas: React.FC = () => {
       }}
     >
       <Canvas
-        camera={{ position: [100, 10, 0], fov: 75 }} // Adjust camera position
-        style={{ height: '100%', width: '100%' }} // Set canvas size
+        camera={{ position: [100, 10, 0], fov: 75 }}
+        style={{ height: '100%', width: '100%' }}
       >
         <Suspense fallback={null}>
           <Points />
         </Suspense>
-        <OrbitControls autoRotate autoRotateSpeed={-0.2} /> {/* Add OrbitControls */}
+        <OrbitControls 
+          autoRotate 
+          autoRotateSpeed={-0.2}
+          enablePan={false} 
+          enableZoom={false} 
+          enableRotate={false} 
+        />
       </Canvas>
     </animated.div>
   );

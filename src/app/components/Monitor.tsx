@@ -2,7 +2,7 @@ import React from 'react';
 import { useGLTF } from '@react-three/drei';
 
 const Monitor: React.FC<{ scale: number; dragOffsetY: number }> = ({ scale, dragOffsetY }) => {
-  const { scene } = useGLTF('/Monitor.glb');
+  const { scene } = useGLTF('/3DModels/Monitor.glb');
 
   const positionY = -4.58 * (scale / 70) - dragOffsetY * 0.004; // Adjust position based on dragOffsetY
   const adjustedScale = scale / 5;

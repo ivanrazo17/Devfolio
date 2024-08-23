@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box } from '@react-three/drei';
 import { animated, useSpring } from '@react-spring/three';
 
@@ -9,10 +9,13 @@ interface NeonBarProps {
 }
 
 const NeonBar: React.FC<NeonBarProps> = ({ triggerAnimation, position, width }) => {
+    const [originPosition] = useState<[number, number, number]>([0, 0, 0]); // Declare originPosition state
+
     const [springProps, api] = useSpring(() => ({
         scale: [1, 1, 1],
         opacity: 1,
-        config: { mass: 1, tension: 170, friction: 26 },
+        position,
+        config: { tension: 800, friction: 50 },
     }));
 
     React.useEffect(() => {
@@ -20,16 +23,17 @@ const NeonBar: React.FC<NeonBarProps> = ({ triggerAnimation, position, width }) 
             api.start({
                 scale: [0, 0, 0], // Scale down to zero
                 opacity: 0, // Fade out
+                position: originPosition, // Move to origin position during fade-out
             });
         } else {
             api.start({
                 scale: [200, 20, 1], // Vertical thick rectangle
                 opacity: 1, // Restore opacity
+                position, // Move back to the initial position
             });
         }
-    }, [triggerAnimation, api]);
+    }, [triggerAnimation, api, position, originPosition]);
 
-    // Same properties as the main Box
     const boxArgs: [number, number, number] = [width, 25, 1];
     const materialProps = {
         emissive: "#5888A5",
@@ -42,9 +46,8 @@ const NeonBar: React.FC<NeonBarProps> = ({ triggerAnimation, position, width }) 
 
     return (
         <animated.group
-            position={position} // Use the position prop
+            position={springProps.position as unknown as [number, number, number]} 
             scale={springProps.scale as unknown as [number, number, number]}
-            renderOrder={0} // Ensure this is rendered behind other objects if needed
         >
             {/* NeonBar Box */}
             <animated.mesh>
@@ -53,7 +56,6 @@ const NeonBar: React.FC<NeonBarProps> = ({ triggerAnimation, position, width }) 
                 </Box>
             </animated.mesh>
         </animated.group>
-        
     );
 };
 

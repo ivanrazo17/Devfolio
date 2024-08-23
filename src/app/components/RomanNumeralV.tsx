@@ -4,32 +4,32 @@ import { animated, useSpring } from '@react-spring/three';
 
 interface NeonBarProps {
     triggerAnimation: boolean;
-    position: [number, number, number]; // Position prop
-    width: number; // Add width prop
+    position: [number, number, number];
+    width: number;
 }
 
 const NeonBar: React.FC<NeonBarProps> = ({ triggerAnimation, position, width }) => {
     const [springProps, api] = useSpring(() => ({
         scale: [1, 1, 1],
         opacity: 1,
-        config: { mass: 1, tension: 170, friction: 26 },
+        config: { tension: 800, friction: 50 },
     }));
 
     React.useEffect(() => {
         if (triggerAnimation) {
             api.start({
-                scale: [0, 0, 0], // Scale down to zero
-                opacity: 0, // Fade out
+                scale: [0, 0, 0],
+                opacity: 0,
             });
         } else {
             api.start({
-                scale: [200, 20, 1], // Vertical thick rectangle
-                opacity: 1, // Restore opacity
+                scale: [200, 20, 1], 
+                opacity: 1, 
             });
         }
     }, [triggerAnimation, api]);
 
-    // Same properties as the main Box
+
     const boxArgs: [number, number, number] = [width / 2, 20, 1];
     const materialProps = {
         emissive: "#5888A5",
@@ -42,22 +42,21 @@ const NeonBar: React.FC<NeonBarProps> = ({ triggerAnimation, position, width }) 
 
     return (
         <animated.group
-            position={position} // Use the position prop
+            position={position}
             scale={springProps.scale as unknown as [number, number, number]}
-            renderOrder={0} // Ensure this is rendered behind other objects if needed
         >
             {/* Left leg of V */}
             <animated.mesh position={[-width / 3, 0, 0]} rotation={[0, 0, Math.PI / 100]}>
-                    <Box args={boxArgs}>
-                        <animated.meshStandardMaterial {...materialProps} />
-                    </Box>
-                </animated.mesh>
-                {/* Right leg of V */}
-                <animated.mesh position={[width / 3, 0, 0]} rotation={[0, 0, -Math.PI / 100]}>
-                    <Box args={boxArgs}>
-                        <animated.meshStandardMaterial {...materialProps} />
-                    </Box>
-                </animated.mesh>
+                <Box args={boxArgs}>
+                    <animated.meshStandardMaterial {...materialProps} />
+                </Box>
+            </animated.mesh>
+            {/* Right leg of V */}
+            <animated.mesh position={[width / 3, 0, 0]} rotation={[0, 0, -Math.PI / 100]}>
+                <Box args={boxArgs}>
+                    <animated.meshStandardMaterial {...materialProps} />
+                </Box>
+            </animated.mesh>
         </animated.group>
         
     );
