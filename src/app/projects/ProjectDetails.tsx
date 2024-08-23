@@ -23,11 +23,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
     return <h1 className={`${roboto.className} text-white`}>Project not found</h1>;
   }
 
-  // Always call useSpring hooks
+  // Define spring configurations
   const opacitySpring = useSpring({
     opacity: triggerAnimation ? 0 : 1,
     config: { 
-      duration: triggerAnimation ? -1 : 500,
+      duration: triggerAnimation ? 0 : 500,
       tension: 200,
       friction: 25,
     },
@@ -42,7 +42,6 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
     loop: { reverse: true }
   });
 
-  // Compute styles conditionally based on the hook results
   const buttonText = project.status === 'Completed' ? 'View Project' : 'Not Available Yet';
   const buttonColor = project.status === 'Completed' ? '#006F9F' : '#ED6968';
   const textColor = project.status === 'Completed' ? 'cyan' : '#ED6968';
@@ -55,7 +54,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
   return (
     <div className="w-full lg:w-[600px] lg:relative bg-gradient-to-t from-black xl:from-transparent">
       <animated.div
-        className={`${roboto.className} p-10 bg-transparent text-white`}
+        className={`${roboto.className} p-10 bg-transparent text-white `}
         style={{ opacity: opacitySpring.opacity }}
       >
         <h1 className='text-2xl lg:text-5xl font-extrabold'>{project.projectName}</h1>
@@ -107,7 +106,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectNum, triggerAnim
       
       {/* Scroll to Cycle and Arrows */}
       <div className='absolute top-[15%] right-[5%] lg:-left-[100%] lg:top-[25%] flex items-center justify-center'>
-        <animated.div style={combinedSpring} className='flex flex-col items-center'>
+        <animated.div style={combinedSpring} className='flex flex-col items-center '>
           <ChevronsUp className='text-white w-[20px]' />
           <div className='lg:hidden text-white text-[12px] my-2' style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
             Drag to Cycle
