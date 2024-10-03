@@ -51,7 +51,7 @@ const About: React.FC = () => {
               An Aspiring{" "}
               <span className="text-[#915EFF]">Web Developer</span>,{" "}
               <span className="text-[#39daf3]">UI/UX Designer</span>,{" "}
-              <span className="text-[#f7da3a]">Data Analytics</span>.
+              <span className="text-[#f7da3a]">Data Analyst</span>.
             </motion.p>
 
             <div className="mt-2 flex justify-center md:justify-start items-center space-x-2 text-white">
