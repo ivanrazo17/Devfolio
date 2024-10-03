@@ -47,7 +47,7 @@ const AboutPage: React.FC = () => {
       </div>
 
       {/* Background Image */}
-      <div className="absolute z-0 w-screen h-screen">
+      <div className="absolute z-0 w-full h-screen">
         <Image
           src="/herobg.png"
           alt="hero"
