@@ -28,7 +28,7 @@ const About: React.FC = () => {
             <div className="relative w-full h-full rounded-full bg-[#17102F]">
               <div className="relative w-full h-full rounded-full overflow-hidden">
                 <Image
-                  src="/profile.jpg"
+                  src="/profile.png"
                   layout="fill"
                   objectFit="cover"
                   alt="Banner"
