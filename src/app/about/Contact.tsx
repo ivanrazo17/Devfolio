@@ -80,20 +80,6 @@ const Contact: React.FC = () => {
                     <p className="sm:text-[18px] text-[14px] text-[#aaa6c3] uppercase tracking-wider">Reach me Out!</p>
                     <h3 className="text-white font-black md:text-[60px] sm:text-[50px] xs:text-[40px] text-[30px]">Contact</h3>
                 </div>
-                <Link href="/RazoResume.pdf" passHref rel="noopener noreferrer" target="_blank">
-                    <button
-                        className='py-1 px-2 text-xs md:text-sm lg:py-2 lg:px-4 lg:text-lg font-bold rounded-xl shadow-lg outline-none whitespace-pre'
-                        style={{
-                            backgroundColor: '#151030',
-                            color: '#fff',
-                            textAlign: 'center',
-                            textDecoration: 'none',
-                            boxShadow: '0 0 5px 5px rgba(157, 140, 205, 0.5)',
-                        }}
-                    >
-                        Resume{'\n'}Link
-                    </button>
-                </Link>
             </div>
  
             <form 

@@ -5,14 +5,14 @@ interface Experience {
     iconBg: string;
     date: string;
     points: string[];
-  }
+}
   
-
-interface Hobby {
+interface Contact {
     title: string;
-    icon: string;
-  }
-  
+    icon?: string; 
+    link?: string; 
+}
+
 export const experiences: Experience[] = [
     {
       title: "Professional Development",
@@ -59,22 +59,21 @@ export const experiences: Experience[] = [
     }
   ];
   
-  export const hobbies: Hobby[] = [
+
+export const contact: Contact[] = [
     {
-      title: "Web Developer",
-      icon: "/HobbiesIcon/WebDeveloper.png",
+        title: "LinkedIn",
+        link: "https://www.linkedin.com/in/ivan-webster-razo-1243952a5",
+        icon: "/Icon/linkedin.svg", 
     },
     {
-      title: "AI Researcher",
-      icon: "/HobbiesIcon/AIResearcher.png",
+        title: "GitHub",
+        link: "https://github.com/ivanrazo17", 
+        icon: "/Icon/github.svg", 
     },
     {
-      title: "Cosplay Artisan",
-      icon: "/HobbiesIcon/CosplayArtisan.png",
+        title: "CV",
+        link: "/RazoResume.pdf", 
+        icon: "/Icon/cv.svg",
     },
-    {
-      title: "Game Collector",
-      icon: "/HobbiesIcon/VideoGameCollector.png",
-    },
-  ];
-  
+];

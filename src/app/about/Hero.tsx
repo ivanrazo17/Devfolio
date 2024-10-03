@@ -1,71 +1,103 @@
-import React from "react";
-import { Tilt } from "react-tilt";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { fadeIn, textVariant } from "../components/Motion";
-import { hobbies } from "./aboutDetails";
+import { contact } from "./aboutDetails"; // Make sure to import your updated contact details
+import SectionWrapper from "./SectionWrapper";
 import Image from "next/image";
-import SectionWrapper from "./SectionWrapper"; // Adjust the path as needed
-
-// Define types for HobbiesCard props
-interface HobbiesCardProps {
-  index: number;
-  title: string;
-  icon: string;
-}
-
-// HobbiesCard component to display individual hobbies
-const HobbiesCard: React.FC<HobbiesCardProps> = ({ index, title, icon }) => {
-    return (
-      <Tilt className="lg:w-[250px] w-full">
-        <motion.div
-          variants={fadeIn("right", "spring", 0.5 * index, 0.75)}
-          className="w-full bg-gradient-to-b from-[#099AB0] to-[#B656E3] p-[1px] rounded-[20px] shadow-lg"
-          style={{
-            boxShadow: '0 0 5px 5px rgba(124, 115, 156, 0.2)',
-          }}
-        >
-          <div className="bg-[#17102F] rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col">
-            <Image
-              src={icon}
-              alt={title}
-              width={100}
-              height={100}
-              className="object-contain"
-              aria-label={`Icon representing ${title}`}
-            />
-            <h3 className="text-white text-[20px] font-bold text-center">{title}</h3>
-          </div>
-        </motion.div>
-      </Tilt>
-    );
-};
+import { MapPinHouse } from 'lucide-react';
 
 const About: React.FC = () => {
-    return (
-      <>
-        <motion.div variants={textVariant(0)}>
-          <p className="sm:text-[18px] text-[14px] text-secondary uppercase tracking-wider mt-2">Get to Know Me.</p>
-          <h2 className="text-white font-black md:text-[60px] sm:text-[50px] xs:text-[40px] text-[30px] lg:leading-[98px]">
-            Hi, I’m <span className="text-[#915EFF]">Ivan</span>
-          </h2>
-        </motion.div>
-  
-        <motion.p
-          variants={fadeIn("up", "spring", 0.1, 1)}
-          className="mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]"
-        >
-          An Aspiring Web Developer based in the Philippines. I am also pushing the boundaries of technology as
-          an AI Researcher. Apart from that, I am also a Cosplay Artisan and a Video Game Collector,
-          combining creativity with a love for rare collections.
-        </motion.p>
-  
-        <div className="mt-20 flex flex-wrap gap-10">
-          {hobbies.map((hobby, index) => (
-            <HobbiesCard key={hobby.title + index} index={index} {...hobby} />
-          ))}
+  const [emailText, setEmailText] = useState("Connect with me");
+
+  const copyEmail = (email: string) => {
+    navigator.clipboard.writeText(email);
+    setEmailText("Email copied");
+    setTimeout(() => {
+      setEmailText("Connect with me");
+    }, 1500);
+  };
+
+  return (
+    <>
+      <motion.div variants={textVariant(0)}>
+        {/* Adjust flex direction based on screen size */}
+        <div className="mt-20 flex flex-col md:flex-row items-center justify-center space-y-10 md:space-y-0 md:space-x-10">
+          {/* Container for the image with gradient border */}
+          <div className="relative w-80 h-80 rounded-full p-[4px] bg-gradient-to-b from-[#099AB0] to-[#B656E3]">
+            {/* Smaller image inside the gradient border */}
+            <div className="relative w-full h-full rounded-full bg-[#17102F]">
+              <div className="relative w-full h-full rounded-full overflow-hidden">
+                <Image
+                  src="/profile.jpg"
+                  layout="fill"
+                  objectFit="cover"
+                  alt="Banner"
+                  priority={true}
+                  className="rounded-full"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Info Section */}
+          <div className="text-center md:text-left">
+            <h2 className="text-white font-black md:text-[60px] sm:text-[50px] xs:text-[40px] text-[60px] lg:leading-[98px]">
+              Hi, I’m <span className="text-[#915EFF]">Ivan</span>
+            </h2>
+            <motion.p
+              variants={fadeIn("up", "spring", 0.1, 1)}
+              className="text-secondary text-xl max-w-3xl leading-[30px]"
+            >
+              An Aspiring{" "}
+              <span className="text-[#915EFF]">Web Developer</span>,{" "}
+              <span className="text-[#39daf3]">UI/UX Designer</span>,{" "}
+              <span className="text-[#f7da3a]">Data Analytics</span>.
+            </motion.p>
+
+            <div className="mt-2 flex justify-center md:justify-start items-center space-x-2 text-white">
+              <MapPinHouse />
+              <p>Muntinlupa, Philippines</p>
+            </div>
+
+            {/* Contact Section */}
+            <div className="mt-5 flex flex-row justify-center md:justify-start space-x-6">
+              <button
+                className="flex flex-col items-center bg-gradient-to-b from-[#099AB0] to-[#B656E3] p-[1px] rounded-[20px] transition-all duration-300 hover:scale-110"
+                onClick={() => copyEmail("ivanrazo745@gmail.com")}
+              >
+                <div className="bg-[#17102F] rounded-[20px] px-3 h-12 flex flex-col justify-center items-center whitespace-nowrap">
+                  <div className="flex items-center">
+                    <div className="animate-pulse bg-green-500 rounded-full h-2 w-2" />
+                    <span className="text-white text-md font-bold text-center mx-2">{emailText}</span>
+                  </div>
+                </div>
+              </button>
+
+              {contact.map((item, index) => (
+                <div key={item.title + index} className="flex flex-col items-center mx-2">
+                  <a href={item.link} target="_blank" rel="noopener noreferrer">
+                    {item.icon ? (
+                      <Image
+                        src={item.icon}
+                        width={40}
+                        height={40}
+                        className="transition-transform duration-300 hover:scale-110 invert"
+                        alt={item.title}
+                      />
+                    ) : (
+                      <div className="w-10 h-10 bg-gray-300 flex items-center justify-center rounded-full">
+                        No Icon
+                      </div>
+                    )}
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      </>
-    );
+      </motion.div>
+    </>
+  );
 };
 
 export default SectionWrapper(About, "about");

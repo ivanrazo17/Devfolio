@@ -1,3 +1,4 @@
+import React from 'react';
 import IconCloud from "../../../@/components/magicui/icon-cloud";
 import SectionWrapper from "./SectionWrapper";
 import { motion } from "framer-motion";
@@ -31,7 +32,7 @@ const slugs = [
 const paragraph = {
     languages: ["C++", "Python", "JavaScript", "HTML", "CSS", "PHP", "HDL", "TCL"],
     frameworks: ["Bootstrap", "ReactJS", "Next.js", "Three.js", "Tailwind CSS"],
-    tools: ["Figma", "Git", "GitHub", "Synopsys", "Microsoft Excel", "Microsoft PowerPoint", "Microsoft Word", "MySQL", "Google Colab", "Dev-C++", "Visual Studio Code"],
+    tools: ["Figma", "Git", "GitHub", "Synopsys", "Microsoft Office Tools", "MySQL", "Google Colab", "Dev-C++", "Visual Studio Code"],
 };
 
 const ColumnList: React.FC<{ items: string[] }> = ({ items }) => {
@@ -59,8 +60,6 @@ const ColumnList: React.FC<{ items: string[] }> = ({ items }) => {
 const TechStacks: React.FC = () => {
   return (
     <> 
-        
-
         <motion.div variants={textVariant(0)}>
             <p className="sm:text-[18px] text-[14px] text-secondary uppercase tracking-wider">What I Learned So Far.</p>
             <h2 className="text-white font-black md:text-[60px] sm:text-[50px] xs:text-[40px] text-[30px]">Tech Stacks</h2>
