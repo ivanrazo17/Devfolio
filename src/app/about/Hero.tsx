@@ -59,7 +59,7 @@ const About: React.FC = () => {
 
             <div className="mt-2 flex justify-center md:justify-start items-center space-x-2 text-white">
               <MapPinHouse />
-              <p>Muntinlupa, Philippines</p>
+              <p>Metro Manila, Philippines</p>
             </div>
 
             {/* Contact Section */}
