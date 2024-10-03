@@ -54,9 +54,9 @@ const About: React.FC = () => {
           variants={fadeIn("up", "spring", 0.1, 1)}
           className="mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]"
         >
-          A Web Developer with expertise in React, Next.js, and Three.js, and 
-          an AI Researcher pushing the boundaries of technology. Outside of tech, I’m a Cosplay 
-          Artisan and Video Game Collector, combining creativity with a love for rare collections.
+          An Aspiring Web Developer based in the Philippines. I am also pushing the boundaries of technology as
+          an AI Researcher. Apart from that, I am also a Cosplay Artisan and a Video Game Collector,
+          combining creativity with a love for rare collections.
         </motion.p>
   
         <div className="mt-20 flex flex-wrap gap-10">
