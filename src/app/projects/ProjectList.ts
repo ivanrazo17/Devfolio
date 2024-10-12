@@ -39,7 +39,7 @@ const ProjectList: Project[] = [
     scale: [0.08, 0.1, 0.2],
     position: [0, 2.5, -0.5],
     modelSrc: "/3DModels/VAHCINET3D.gltf",
-    href: "https://github.com/ivanrazo17/vahcinet2",
+    href: "https://vahcinet.vercel.app/",
     status: "Completed",
     description: "A Human-Computer Interaction system utilizing Convolutional Neural Networks (CNN) for computer navigation",
     techStacks: ["TensorFlow", "Keras", "Python", "JavaScript", "Node.js"]
